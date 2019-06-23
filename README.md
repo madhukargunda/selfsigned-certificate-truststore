@@ -114,3 +114,87 @@ Step3 : Generating the unencrypted version of the
 openssl rsa -in private.pem -out private_unencrypted.pem -outform PEM
 
 ```
+
+### RSA Key Generation, Signatures and Encryption using OpenSSL
+
+```
+What ever we are doing  using the java we can do with openssl 
+
+USER A Public and private key 
+
+1.Generate the public and private key 
+
+		openssl version
+
+
+ openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2018 -pkeyopt rsa_keygen_pubexp:3  -out privkey-A.pem
+
+   This generates the private key in Base64 format.
+
+
+ 2.openssl pkey -in privkey-A.pem -text 
+
+    This displays the all the values  of the certificate in Hex decimal values.
+
+
+ 3.Creating the public key 
+
+ 	openssl pkey -in privkey-A.pem -out pubkey-A.pem -pubout
+
+ 	  This generates the public key in base 64 format
+
+
+User B Publickey and Privatekey 
+
+4.Generate the public and private key 
+
+		openssl version
+
+
+ openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2018 -pkeyopt rsa_keygen_pubexp:3  -out privkey-B.pem
+
+   This generates the private key in Base64 format.
+
+
+ 5.openssl pkey -in privkey-B.pem -text 
+
+    This displays the all the values  of the certificate in Hex decimal values.
+
+
+ 6.Creating the public key 
+
+ 	openssl pkey -in privkey-B.pem -out pubkey-B.pem -pubout
+
+ 	  This generates the public key in base 64 format
+
+
+
+ 7.
+     openssl pkey -in pubkey-A.pem -pubin -text 
+     openssl pkey -in pubkey-B.pem -pubin -text 
+    
+
+     Displays the base64
+
+ 5. Create a the text file with the data
+
+ 6.openssl dgst -sha1 message.txt 
+
+ 7.openssl dgst -sha1 -sign privkey-A.pem -out signature.bin message.txt
+
+     Here we are doing 
+
+     	1.Generating the message digest
+     	2.Encrypt the message digest using private key.
+
+ 8. Encrypt the message using the public key of the User B
+    Encrypt the message using the UserB public key
+
+   openssl pkeyutl -encrypt -in message.txt -pubin -inkey pubkey-b.pem -out ciphertext.bin
+
+ 
+ 9. openssl pkeyutl -decrypt -in ciphertext.bin -inkey privatkey-B.pem - out received-message.txt 
+
+
+ 10.openssl dgst -sha1 -verify pubkey-A.pem -signature signature.bin received-message.txt
+ ```
